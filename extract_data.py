@@ -1,29 +1,36 @@
 import pandas as pd
-import os 
+# import json
+# from Calculations import (Refrigerants, Heat_and_Steam, Other_Stationary, Purchased_Electricity, Company_Vehicles, Natural_Gas_func)
 
-def extract_data_by_asset_type(folder_path):
+def extract_data_by_asset_type(file_path):
     """
+    Extracts data by asset type from a single Excel file, skipping the first two rows and keeping the third row as headers.
+
     Returns:
-        list: A list of dictionaries, each with 'Asset Type' as the key.
+        list: A list of dictionaries, each containing 'Asset Type' as the key and corresponding data.
     """
     all_structured_data_list = []
+    df = pd.read_excel(file_path, skiprows=[1,2])  # skipping first 2 rows 
+    # print("Column names in the Excel file:", df.columns.tolist())
+    df.columns = df.columns.str.strip().str.lower()  
+    data_list = df.to_dict(orient='records')
 
-    for filename in os.listdir(folder_path):
-        if filename.endswith('.xlsx') or filename.endswith('.xls'):
-            file_path = os.path.join(folder_path, filename)
-            df = pd.read_excel(file_path)
-            data_list = df.to_dict(orient='records')
+    structured_data_list = [] 
+    for row in data_list:
 
-            structured_data_list = [] # Set 'Asset Type' as the key for each row
-            for row in data_list:
-                asset_type = row.pop('Asset Type')  # Remove 'Asset Type' and store its value
-                structured_row = {asset_type: row}  # Use the 'Asset Type' value as the key
-                structured_data_list.append(structured_row)
+        asset_type = row.pop('asset type') 
+        
+        if asset_type is None:
+            print(f"Warning: 'asset type' not found in row: {row}")
+            continue
 
-            all_structured_data_list.extend(structured_data_list)
+        structured_row = {asset_type: row} 
+        structured_data_list.append(structured_row)
+
+    all_structured_data_list.extend(structured_data_list)
 
     return all_structured_data_list
 
-folder_path = 'Batch-input-Page\Templates'
-result = extract_data_by_asset_type(folder_path)
-print(result)
+file_path = 'Batch-input-Page\Templates\Refrigerants.xlsx'
+result = extract_data_by_asset_type(file_path)
+print(result[0])
