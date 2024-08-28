@@ -29,11 +29,39 @@ def extract_data_by_asset_type(file_path):
 
     all_structured_data_list.extend(structured_data_list)
 
-    return all_structured_data_list
+    return all_structured_data_list , df.columns.tolist()
 
-def call_functions_based_on_asset_type(data):
+
+def purchased_electricity(Actual_estimate, Country , Tariff, Reporting_Year, value_type, 
+                          Reporting_periods_list=[2023], EF_years_list=[2023],
+                          Consumption_kWh=0, currency="", Total_spend=0, 
+                          Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
+                          Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
+                          Renewables_percent=0, Other_Fuel_percent=0):
+    return (f"Processed Purchased Electricity data: Country={Country}, Tariff={Tariff}, "
+            f"Year={Reporting_Year}, Value Type={value_type}, Consumption={Consumption_kWh} kWh, "
+            f"Total Spend={Total_spend} {currency}, Coal={Coal} ({Coal_percent}%), "
+            f"Natural Gas={Natural_Gas} ({Natural_Gas_percent}%), Nuclear={Nuclear} ({Nuclear_percent}%), "
+            f"Renewables={Renewables} ({Renewables_percent}%), Other Fuel={Other_Fuel} ({Other_Fuel_percent}%), "
+            f"Reporting Periods={Reporting_periods_list}, EF Years={EF_years_list}")
+
+
+def company_vehicles(data):
+    return f"Processed data for Company Vehicles: {data}"
+
+
+
+asset_type_functions = {
+    'Refrigerants': Refrigerants,
+    'Heat_and_Steam': Heat_and_Steam,
+    'Other_Stationary': Other_Stationary,
+    'Purchased_Electricity': purchased_electricity, ########## change this### to Purchased_Electricity
+    'Company_Vehicles': company_vehicles, ########## change this###
+    'Natural_Gas_func': Natural_Gas_func
+}
+def process_asset_data(structured_data_list):
     """
-    Calls specific functions from Calculations.py based on the 'Asset Type' in the input data and returns the results as JSON.
+    Calls functions from Calculations.py based on the 'Asset Type' in the input data and returns the results as JSON.
 
     Args:
         data (list): A list of dictionaries containing asset data.
@@ -41,108 +69,96 @@ def call_functions_based_on_asset_type(data):
     Returns:
         str: A JSON string containing the results of the calculations.
     """
-    results_json = []
+    processed_results = []
 
-    asset_function_map = {
-        'refrigerants': Refrigerants,
-        'heat_and_steam': Heat_and_Steam,
-        'other_stationary': Other_Stationary,
-        'purchased_electricity': Purchased_Electricity,
-        'company_vehicles': Company_Vehicles,
-        'natural_gas': Natural_Gas_func
-    }
+    for data in structured_data_list:
+        for asset_type, asset_data in data.items():
+            if asset_type == 'Refrigerants':
+                result = Refrigerants(
+                    Actual_estimate = None ,
+                    reporting_year  =asset_data.get('reporting year'),
+                     Equipment_type =asset_data.get('equipment type'),
+                     Purpose_stage =asset_data.get('purpose stage'),
+                     Refrigerant_type =asset_data.get('refrigerant type'),
+                     Refrigerant_lost_kg =asset_data.get('refrigerant recovered (kg)'),
+                    method=asset_data.get('method'),
+                    total_refrigerant_charge=asset_data.get('total refrigerant charge (kg)')
+                )
+                processed_results.append({asset_type: result})
+            elif asset_type == 'Heat and Steam':
+                result = Heat_and_Steam(
+                    Actual_estimate = None ,
+                    Reporting_Year=asset_data.get('reporting year'),
+                    Typology=asset_data.get('typology'),
+                    value_type=asset_data.get('value type'),
+                    consumtion=asset_data.get('consumption (kWh)'),
+                    Total_spend=asset_data.get('total spend'),
+                    currency_Type=asset_data.get('currency')
+                )
+                processed_results.append({asset_type: result})
+            elif asset_type == 'Other Stationary':
+                result = Other_Stationary(
+                    Actual_estimate = None ,
+                    Reporting_Year=asset_data.get('reporting year'),
+                    Fuel_type=asset_data.get('fuel type'),
+                    Fuel_Unit=asset_data.get('fuel unit'),
+                    value_type=asset_data.get('value type'),
+                    Consumption=asset_data.get('consumption'),
+                    Total_spend=asset_data.get('total spend'),
+                    currency=asset_data.get('currency')
+                )
+                processed_results.append({asset_type: result})             
+            elif asset_type == 'Purchased Electricity':
+                ########## change this### to Purchased_Electricity
+                result = purchased_electricity( 
+                    Actual_estimate = None ,
+                    Country=asset_data.get('country'),
+                    Tariff=asset_data.get('tariff'),
+                    Reporting_Year=asset_data.get('reporting year'),
+                    value_type=asset_data.get('value type'),
+                    Consumption_kWh=asset_data.get('consumption (kWh)'),
+                    currency=asset_data.get('currency'),
+                    Total_spend=asset_data.get('total spend'),
+                    Coal=asset_data.get('coal'),
+                    Natural_Gas=asset_data.get('natural gas'),
+                    Nuclear=asset_data.get('nuclear'),
+                    Renewables=asset_data.get('renewables'),
+                    Other_Fuel=asset_data.get('other fuel'),
+                    Coal_percent=asset_data.get('coal percent'),
+                    Natural_Gas_percent=asset_data.get('natural gas percent'),
+                    Nuclear_percent=asset_data.get('nuclear percent'),
+                    Renewables_percent=asset_data.get('renewables percent'),
+                    Other_Fuel_percent=asset_data.get('other fuel percent')
+                )
+                processed_results.append({asset_type: result})                
+            elif asset_type == 'Natural Gas':
+                result = Natural_Gas_func(
+                    Actual_estimate = None ,
+                    reporting_year=asset_data.get('reporting year'),
+                    Meter_Read_Units=asset_data.get('meter read units'),
+                    value_type=asset_data.get('value type'),
+                    Consumption=asset_data.get('consumption'),
+                    Total_spend=asset_data.get('total spend'),
+                    currency=asset_data.get('currency')
+                )
+                processed_results.append({asset_type: result})
+            ########## change this### ADD  Company_Vehicles 2 functions 
+            else:
+                process_function = asset_type_functions.get(asset_type)
+                if process_function:
+                    result = process_function(asset_data)
+                    processed_results.append({asset_type: result})
+                else:
+                    print(f"Warning: No processing function found for asset type '{asset_type}'")
 
-    required_parameters = {
-        'refrigerants': {
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'equipment_type': {'excel_col': 'equipment_type', 'default': None},
-            'purpose_stage': {'excel_col': 'purpose_stage', 'default': None},
-            'refrigerant_type': {'excel_col': 'refrigerant_type', 'default': None},
-            'refrigerant_lost_kg': {'excel_col': 'refrigerant_recovered_(kg)', 'default': 0},
-            'method': {'excel_col': 'method', 'default': 'Unknown Method'},
-            'total_refrigerant_charge': {'excel_col': 'total_refrigerant_charge_(kg)', 'default': 0}
-        },
-        'heat_and_steam': {
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'typology': {'excel_col': 'typology', 'default': 'General'},
-            'value_type': {'excel_col': 'value_type', 'default': 'Estimate'},
-            'consumption': {'excel_col': 'consumption', 'default': 0},
-            'total_spend': {'excel_col': 'total_spend', 'default': 0},
-            'currency_type': {'excel_col': 'currency_type', 'default': 'USD'}
-        },
-        'other_stationary': {
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'fuel_type': {'excel_col': 'fuel_type', 'default': 'Unknown'},
-            'fuel_unit': {'excel_col': 'fuel_unit', 'default': 'liters'},
-            'value_type': {'excel_col': 'value_type', 'default': 'Estimate'},
-            'consumption': {'excel_col': 'consumption', 'default': 0},
-            'total_spend': {'excel_col': 'total_spend', 'default': 0},
-            'currency': {'excel_col': 'currency', 'default': 'USD'}
-        },
-        'purchased_electricity': {
-            'country': {'excel_col': 'country', 'default': 'Unknown'},
-            'tariff': {'excel_col': 'tariff', 'default': 'Standard'},
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'value_type': {'excel_col': 'value_type', 'default': 'Estimate'},
-            'consumption_kwh': {'excel_col': 'consumption_kwh', 'default': 0},
-            'currency': {'excel_col': 'currency', 'default': 'USD'},
-            'total_spend': {'excel_col': 'total_spend', 'default': 0},
-            'coal': {'excel_col': 'coal', 'default': 0},
-            'natural_gas': {'excel_col': 'natural_gas', 'default': 0},
-            'nuclear': {'excel_col': 'nuclear', 'default': 0},
-            'renewables': {'excel_col': 'renewables', 'default': 0},
-            'other_fuel': {'excel_col': 'other_fuel', 'default': 0},
-            'coal_percent': {'excel_col': 'coal_percent', 'default': 0.0},
-            'natural_gas_percent': {'excel_col': 'natural_gas_percent', 'default': 0.0},
-            'nuclear_percent': {'excel_col': 'nuclear_percent', 'default': 0.0},
-            'renewables_percent': {'excel_col': 'renewables_percent', 'default': 0.0},
-            'other_fuel_percent': {'excel_col': 'other_fuel_percent', 'default': 0.0}
-        },
-        'company_vehicles': {
-            'activity_type': {'excel_col': 'activity_type', 'default': 'Transport'},
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'method': {'excel_col': 'method', 'default': 'Standard'},
-            'vehicle_category': {'excel_col': 'vehicle_category', 'default': 'Light'},
-            'vehicle_type': {'excel_col': 'vehicle_type', 'default': 'Car'},
-            'fuel_type': {'excel_col': 'fuel_type', 'default': 'Petrol'},
-            'fuel_amount_in_litres': {'excel_col': 'fuel_amount_in_litres', 'default': 0},
-            'fuel_type_laden': {'excel_col': 'fuel_type_laden', 'default': 'None'},
-            'unit_distance_travelled': {'excel_col': 'unit_distance_travelled', 'default': 'km'},
-            'distance_travelled': {'excel_col': 'distance_travelled', 'default': 0}
-        },
-        'natural_gas': {
-            'reporting_year': {'excel_col': 'reporting_year', 'default': None},
-            'meter_read_units': {'excel_col': 'meter_read_units', 'default': 'cubic meters'},
-            'value_type': {'excel_col': 'value_type', 'default': 'Estimate'},
-            'consumption': {'excel_col': 'consumption', 'default': 0},
-            'total_spend': {'excel_col': 'total_spend', 'default': 0},
-            'currency': {'excel_col': 'currency', 'default': 'USD'}
-        }
-    }
+    return json.dumps(processed_results, indent=4, default=str)
 
-    for item in data:
-        for asset_type, details in item.items():
-            normalized_asset_type = asset_type.strip().lower().replace(' ', '_')
 
-            calculation_function = asset_function_map.get(normalized_asset_type)
-
-            
-            if calculation_function:
-                # Extract only the parameters that the function requires, providing defaults if missing
-                function_params = {}
-                for param, info in required_parameters[normalized_asset_type].items():
-                    
-                    function_params[param] = details.get(info['excel_col'], info['default'])
-
-                result = calculation_function(**function_params)
-                print(result[0])
-                # results_json.append(result)
-
-    return json.dumps(results_json)
-
-file_path = 'Batch-input-Page\Templates\Refrigerants.xlsx'
-result = extract_data_by_asset_type(file_path)
+file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
+result , headers = extract_data_by_asset_type(file_path)
+# print(result[0],headers)
+# print(headers)
 # print(result[0])
-call_functions_based_on_asset_type([result[5]])
-# json_result = call_functions_based_on_asset_type([result[5]])
-# print(json_result)
+
+json_result = process_asset_data(result)
+print(json_result)
