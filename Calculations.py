@@ -22,7 +22,80 @@ def Refrigerants(Actual_estimate ,reporting_year ,
                   method , Reporting_periods_list =[2023],
                   EF_years_list = [2023] ,total_refrigerant_charge = 0) : 
     
-    print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+    # reporting period list = [ from 2021 to 2023 ] in my Excel 
+    if Actual_estimate == None :
+        Actual_estimate = "actual" 
+    # Calculate Refrigerant_Lost_kg 
+    Refrigerant_Lost_kg = 0
+    Simplified_Material_Balance_method = "Simplified Material Balance method"
+    if method == Simplified_Material_Balance_method.lower() : 
+        Refrigerant_Lost_kg = Refrigerant_lost_kg
+
+    #*********************************************************************
+    # Calculate EF_Year 
+    EF_years_lists = EF_years_list
+    index = Reporting_periods_list.index(reporting_year)
+    EF_Year= EF_years_lists[index]
+
+    #*********************************************************************
+    # calculate Emission factor (kgCO2e/kg)
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
+
+    # Define the column names
+    columns = ['Level 3', 'Year', 'Level 5', 'GHG Conversion Factor']
+
+    # Set the column names
+    df = df[columns]
+    df.columns
+    # Filter the DataFrame to match the refrigerant type, EF year, and column text
+    filtered_df = df[(df['Level 3'].str.lower() == str(Refrigerant_type).lower()) &
+                    (df['Year'] == EF_Year ) &
+                    (df['Level 5'] == 'Kyoto products')]
+
+    # If a match is found, return the GHG conversion factor
+    if not filtered_df.empty:
+        Emission_factor_kgCO2e_kg = filtered_df['GHG Conversion Factor'].iloc[0]
+
+    #*********************************************************************
+   
+    # calculate NON KYOTO Emission factor (kgCO2e/kg)2 
+    filtered_df1 = df[(df['Level 3'].str.lower() == str(Refrigerant_type).lower()) &
+                    (df['Year'] == EF_Year ) &
+                    (df['Level 5'] == 'Non Kyoto')]
+    NON_KYOTO_Emission_factor_kgCO2e_kg_2 = filtered_df1['GHG Conversion Factor'].iloc[0]
+
+    #*********************************************************************
+    #calculate Total Emissions kgCO2e 
+    equipment_df = pd.read_excel("Data/Refrigerant Equipment.xlsx")
+
+    # Simplified Material Balance method
+    Refrigerants_results = {}
+    Simplified_Material_Balance_method = "Simplified Material Balance method"
+    if method == Simplified_Material_Balance_method.lower() : 
+        Total_Emissionskg_CO2e = Refrigerant_Lost_kg * Emission_factor_kgCO2e_kg
+
+    # Other methods
+    else:
+        # Get the emission factor for the equipment type and purpose stage
+        emission_factor_equipment = equipment_df.loc[equipment_df['Refrigerant Equipment'].str.lower() == str(Equipment_type).lower() , [col for col in equipment_df.columns ]].iloc[0].tolist()
+        purpose_stage_index = [str(col).lower() for col in equipment_df.columns ].index(str(Purpose_stage).lower())
+        emission_factor_equipment = emission_factor_equipment[purpose_stage_index]
+        # Calculate emissions
+        total_refrigerant_charge = total_refrigerant_charge
+        Total_Emissionskg_CO2e = float(total_refrigerant_charge) * emission_factor_equipment * Emission_factor_kgCO2e_kg
+
+    Refrigerants_Emissions_tCO2e = (Total_Emissionskg_CO2e) / 1000 
+    Refrigerants_results = {
+        "Refrigerant_Lost_kg": Refrigerant_Lost_kg,
+        "EF_Year": EF_Year,
+        "Emission_factor_kgCO2e_kg": Emission_factor_kgCO2e_kg,
+        "NON_KYOTO_Emission_factor_kgCO2e_kg_2": NON_KYOTO_Emission_factor_kgCO2e_kg_2,
+        "Total_Emissionskg_CO"
+        "2e": Total_Emissionskg_CO2e,
+        "Refrigerants_Emissions_tCO2e": Refrigerants_Emissions_tCO2e
+    }
+
+    return [Refrigerants_results]
 
 # print(Refrigerants(2023 , "Condensing Units" , "Installation" ,"R410B" , 10 , "Simplified Material Balance method" , [2020,2021,2022,2023],[2019,2020,2021,2022],30))
 

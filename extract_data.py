@@ -135,8 +135,8 @@ def call_functions_based_on_asset_type(data):
                     function_params[param] = details.get(info['excel_col'], info['default'])
 
                 result = calculation_function(**function_params)
-                print(result)
-             
+                print(result[0])
+                # results_json.append(result)
 
     return json.dumps(results_json)
 
@@ -144,3 +144,5 @@ file_path = 'Batch-input-Page\Templates\Refrigerants.xlsx'
 result = extract_data_by_asset_type(file_path)
 # print(result[0])
 call_functions_based_on_asset_type([result[5]])
+# json_result = call_functions_based_on_asset_type([result[5]])
+# print(json_result)
