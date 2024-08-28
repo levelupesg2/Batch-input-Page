@@ -97,7 +97,9 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     return [Refrigerants_results]
 
-# print(Refrigerants(2023 , "Condensing Units" , "Installation" ,"R410B" , 10 , "Simplified Material Balance method" , [2020,2021,2022,2023],[2019,2020,2021,2022],30))
+print(Refrigerants( Actual_estimate = None ,reporting_year = 2023 ,Equipment_type = "Condensing Units" , Purpose_stage = "Installation" , 
+                   Refrigerant_type = "R410B" , 
+                   Refrigerant_lost_kg = 10 , method = "Simplified Material Balance method" , total_refrigerant_charge =30))
 
 def Heat_and_Steam(Actual_estimate , Reporting_Year,
                    Typology, 
