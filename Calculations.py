@@ -97,9 +97,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     return [Refrigerants_results]
 
-print(Refrigerants( Actual_estimate = None ,reporting_year = 2023 ,Equipment_type = "Condensing Units" , Purpose_stage = "Installation" , 
-                   Refrigerant_type = "R410B" , 
-                   Refrigerant_lost_kg = 10 , method = "Simplified Material Balance method" , total_refrigerant_charge =30))
+# print(Refrigerants(2023 , "Condensing Units" , "Installation" ,"R410B" , 10 , "Simplified Material Balance method" , [2020,2021,2022,2023],[2019,2020,2021,2022],30))
 
 def Heat_and_Steam(Actual_estimate , Reporting_Year,
                    Typology, 
@@ -285,8 +283,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
         "Renewables": Renewables, "Other Fuel": Other_Fuel
     }
 
-    ownsuppliermixtb_df = ownsuppliermixtb_df._append(ownsuppliermixtb_new_row, ignore_index=True)
-    electricity_marketb_ef_df = electricity_marketb_ef_df._append(electricity_marketb_ef_new_row, ignore_index=True)
+    ownsuppliermixtb_df = ownsuppliermixtb_df.append(ownsuppliermixtb_new_row, ignore_index=True)#################
+    electricity_marketb_ef_df = electricity_marketb_ef_df.append(electricity_marketb_ef_new_row, ignore_index=True)###################
 
     Market_Based_Emission_Factor_kgCO2e_kWh = 0
     Grid_average = "Grid average"
@@ -307,7 +305,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
             electricity_marketb_ef_df['EF year'] == EF_Year, 
             ['Coal', 'Natural Gas', 'Nuclear', 'Renewables', 'Other Fuel']
         ].values.flatten()
-
+        
+        ef_row = ef_row[:len(mix_row)]################################
         ef_row = np.nan_to_num(ef_row)
         Fuel_mix_emissions_KgCO2_KWh = np.sum(mix_row * ef_row)
 
@@ -335,8 +334,7 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
     }
 
     return [Purchased_Electricity_results]
-
-# print(Purchased_Electricity("Egypt" ,"Grid average" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
+# print(Purchased_Electricity(Country = "Egypt" ,Tariff = "Grid average" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Renewable procurement" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Own supplier mix" , 2023,
 #                             "Total Spend" ,[2021,2022,2023] ,[2020,2021 ,2022] ,0,"ALL" ,1351.188,1200,2000,2051 ,3021,1533,0.25,0.124,0.32,0.48,0.46))
