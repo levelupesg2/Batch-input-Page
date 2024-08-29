@@ -4,190 +4,150 @@ from Calculations import (Refrigerants, Heat_and_Steam, Other_Stationary, Purcha
 
 def extract_data_by_asset_type(file_path):
     """
-    Extracts data by asset type from a single Excel file, skipping the first two rows and keeping the third row as headers.
-
+    Extracts data by asset type from a single Excel file, skipping the first two rows.
     Returns:
-        list: A list of dictionaries, each containing 'Asset Type' as the key and corresponding data.
+        DataFrame: A DataFrame with the processed data.
+        list: A list of column names.
     """
-    all_structured_data_list = []
-    df = pd.read_excel(file_path, skiprows=[1,2])  # skipping first 2 rows 
-    # print("Column names in the Excel file:", df.columns.tolist())
-    df.columns = df.columns.str.strip().str.lower()  
-    data_list = df.to_dict(orient='records')
+    
+    df = pd.read_excel(file_path, skiprows=[1, 2]) # skip the first two rows
+    df.columns = df.columns.str.strip().str.lower()
+    
 
-    structured_data_list = [] 
-    for row in data_list:
+    if 'asset type' not in df.columns:
+        print("Warning: 'asset type' column not found in the Excel file.")
+        return pd.DataFrame(), []
+    
+    # df = df.dropna(subset=['asset type'])
+    
+    return df, df.columns.tolist()
 
-        asset_type = row.pop('asset type') 
-        
-        if asset_type is None:
-            print(f"Warning: 'asset type' not found in row: {row}")
-            continue
-
-        structured_row = {asset_type: row} 
-        structured_data_list.append(structured_row)
-
-    all_structured_data_list.extend(structured_data_list)
-
-    return all_structured_data_list , df.columns.tolist()
-
-
-# def purchased_electricity(Actual_estimate, Country , Tariff, Reporting_Year, value_type, 
-#                           Reporting_periods_list=[2023], EF_years_list=[2023],
-#                           Consumption_kWh=0, currency="", Total_spend=0, 
-#                           Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
-#                           Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
-#                           Renewables_percent=0, Other_Fuel_percent=0):
-#     return (f"Processed Purchased Electricity data: Country={Country}, Tariff={Tariff}, "
-#             f"Year={Reporting_Year}, Value Type={value_type}, Consumption={Consumption_kWh} kWh, "
-#             f"Total Spend={Total_spend} {currency}, Coal={Coal} ({Coal_percent}%), "
-#             f"Natural Gas={Natural_Gas} ({Natural_Gas_percent}%), Nuclear={Nuclear} ({Nuclear_percent}%), "
-#             f"Renewables={Renewables} ({Renewables_percent}%), Other Fuel={Other_Fuel} ({Other_Fuel_percent}%), "
-#             f"Reporting Periods={Reporting_periods_list}, EF Years={EF_years_list}")
-
-
-def company_vehicles(data):
-    return f"Processed data for Company Vehicles: {data}"
-
-
-
-asset_type_functions = {
-    'Refrigerants': Refrigerants,
-    'Heat_and_Steam': Heat_and_Steam,
-    'Other_Stationary': Other_Stationary,
-    'Purchased_Electricity': Purchased_Electricity, 
-    'Company_Vehicles': Company_Vehicles,
-    'Natural_Gas_func': Natural_Gas_func
-}
-def process_asset_data(structured_data_list):
+def process_asset_data(df):
     """
-    Calls functions from Calculations.py based on the 'Asset Type' in the input data and returns the results as JSON.
+    Calls functions from Calculations.py based on the 'Asset Type' in the input DataFrame and returns the results as JSON.
 
-    Args:
-        data (list): A list of dictionaries containing asset data.
-
-    Returns:
-        str: A JSON string containing the results of the calculations.
     """
     processed_results = []
 
-    for data in structured_data_list:
-        for asset_type, asset_data in data.items():
-            if asset_type == 'Refrigerants':
-                result = Refrigerants(
-                    Actual_estimate=asset_data.get('Actually/Estimate') ,
-                    reporting_year  =asset_data.get('reporting year'),
-                     Equipment_type =asset_data.get('equipment type'),
-                     Purpose_stage =asset_data.get('purpose stage'),
-                     Refrigerant_type =asset_data.get('refrigerant type'),
-                     Refrigerant_lost_kg =asset_data.get('refrigerant recovered (kg)'),
-                    method=asset_data.get('method'),
-                    total_refrigerant_charge=asset_data.get('total refrigerant charge (kg)')
-                )
-                processed_results.append({asset_type: result})
-            elif asset_type == 'Heat and Steam':
-                result = Heat_and_Steam(
-                    Actual_estimate=asset_data.get('Actually/Estimate') ,
-                    Reporting_Year=asset_data.get('reporting year'),
-                    Typology=asset_data.get('typology'),
-                    value_type=asset_data.get('value type'),
-                    consumtion=asset_data.get('consumption (kWh)'),
-                    Total_spend=asset_data.get('total spend'),
-                    currency_Type=asset_data.get('currency')
-                )
-                processed_results.append({asset_type: result})
-            elif asset_type == 'Other Stationary':
-                result = Other_Stationary(
-                    Actual_estimate=asset_data.get('Actually/Estimate') ,
-                    Reporting_Year=asset_data.get('reporting year'),
-                    Fuel_type=asset_data.get('fuel type'),
-                    Fuel_Unit=asset_data.get('fuel unit'),
-                    value_type=asset_data.get('value type'),
-                    Consumption=asset_data.get('consumption'),
-                    Total_spend=asset_data.get('total spend'),
-                    currency=asset_data.get('currency')
-                )
-                processed_results.append({asset_type: result})             
-            elif asset_type == 'Purchased Electricity':
-                result = Purchased_Electricity( 
-                    Actual_estimate=asset_data.get('Actually/Estimate') ,
-                    Country=asset_data.get('country'),
-                    Tariff=asset_data.get('tariff'),
-                    Reporting_Year=asset_data.get('reporting year'),
-                    value_type=asset_data.get('value type'),
-                    Consumption_kWh=asset_data.get('consumption (kWh)'),
-                    currency=asset_data.get('currency'),
-                    Total_spend=asset_data.get('total spend'),
-                    Coal=asset_data.get('coal'),
-                    Natural_Gas=asset_data.get('natural gas'),
-                    Nuclear=asset_data.get('nuclear'),
-                    Renewables=asset_data.get('renewables'),
-                    Other_Fuel=asset_data.get('other fuel'),
-                    Coal_percent=asset_data.get('coal percent'),
-                    Natural_Gas_percent=asset_data.get('natural gas percent'),
-                    Nuclear_percent=asset_data.get('nuclear percent'),
-                    Renewables_percent=asset_data.get('renewables percent'),
-                    Other_Fuel_percent=asset_data.get('other fuel percent')
-                )
-                processed_results.append({asset_type: result})                
-            elif asset_type == 'Natural Gas':
-                result = Natural_Gas_func(
-                    Actual_estimate=asset_data.get('Actually/Estimate') ,
-                    reporting_year=asset_data.get('reporting year'),
-                    Meter_Read_Units=asset_data.get('meter read units'),
-                    value_type=asset_data.get('value type'),
-                    Consumption=asset_data.get('consumption'),
-                    Total_spend=asset_data.get('total spend'),
-                    currency=asset_data.get('currency')
-                )
-            elif asset_type == 'Company Vehicles (Distance-based)'or asset_type == 'Company Vehicles (Fuel-based)':
-                # Determine if data corresponds to Distance-based or Fuel-based
-                if 'distance based' in asset_data:
-                    result = Company_Vehicles(
-                        Actual_estimate=asset_data.get('Actually/Estimate'),
-                        Activity_Type=asset_data.get('Activity_Type'),
-                        Reporting_Year=asset_data.get('Reporting_Year'),
-                        Method='distance based',
-                        Vehicle_category=asset_data.get('Vehicle Category', ""),
-                        Vehicle_Type=asset_data.get('Vehicle Type', ""),
-                        Fuel_type_Laden=asset_data.get('Fuel Type/Laden', "Diesel"),
-                        Unit_distance_travelled=asset_data.get('Unit Distance Travelled', "miles"),
-                        Distance_travelled=asset_data.get('Distance Travelled', 0),
-                        )
-                else:
-                    # Fuel-based data processing
-                    result = Company_Vehicles(
-                        Actual_estimate=asset_data.get('Actually/Estimate'),
-                        Activity_Type=None,
-                        Reporting_Year=asset_data.get('Reporting_Year'),
-                        Method='fuel based',
-                        Fuel_type=asset_data.get('Fuel Type', "Aviation spirit"),
-                Fuel_Amount_in_litres=asset_data.get('Fuel_Amount_in_litres', 0),
-                        Reporting_periods_list=[asset_data.get('Reporting_Year')],
-                    )
-                    processed_results.append({asset_type: result})
-            else:
-                process_function = asset_type_functions.get(asset_type)
-                if process_function:
-                    result = process_function(asset_data)
-                    processed_results.append({asset_type: result})
-                else:
-                    print(f"Warning: No processing function found for asset type '{asset_type}'")
+    for index, row in df.iterrows():
+        asset_type = row['asset type'].strip().lower() 
 
-    return json.dumps(processed_results, indent=4, default=str)
+        if asset_type == 'refrigerants':
+            result = Refrigerants(
+                Actual_estimate=row['actual/estimated'],
+                reporting_year=row['reporting year'],
+                Equipment_type=row['equipment type'],
+                Purpose_stage=row['purpose stage'],
+                Refrigerant_type=row['refrigerant type'],
+                Refrigerant_lost_kg=row['refrigerant recovered (kg)'],
+                method=row['method'],
+                total_refrigerant_charge=row['total refrigerant charge (kg)']
+            )
+            processed_results.append(result)
+
+        elif asset_type == 'heat and steam':
+            result = Heat_and_Steam(
+                Actual_estimate=row['actual/estimated'],
+                Reporting_Year=row['reporting year'],
+                Typology=row['typology'],
+                value_type=row['value type'],
+                consumtion=row['consumption (kwh)'],
+                Total_spend=row['total spend'],
+                currency_Type=row['currency']
+            )
+            processed_results.append(result)
+
+        elif asset_type == 'other stationary':
+            result = Other_Stationary(
+                Actual_estimate=row['actual/estimated'],
+                Reporting_Year=row['reporting year'],
+                Fuel_type=row['fuel type'],
+                Fuel_Unit=row['fuel unit'],
+                value_type=row['value type'],
+                Consumption=row['consumption'],
+                Total_spend=row['total spend'],
+                currency=row['currency']
+            )
+            processed_results.append(result)
+
+        elif asset_type == 'purchased electricity':
+            result = Purchased_Electricity(
+                Actual_estimate=row['actual/estimated'],
+                Country=row['country'],
+                Tariff=row['tariff'],
+                Reporting_Year=row['reporting year'],
+                value_type=row['value type'],
+                Consumption_kWh=row['consumption (kwh)'],
+                currency=row['currency'],
+                Total_spend=row['total spend'],
+                Coal=row['coal'],
+                Natural_Gas=row['natural gas'],
+                Nuclear=row['nuclear'],
+                Renewables=row['renewables'],
+                Other_Fuel=row['other fuel'],
+                Coal_percent=row['coal percent'],
+                Natural_Gas_percent=row['natural gas percent'],
+                Nuclear_percent=row['nuclear percent'],
+                Renewables_percent=row['renewables percent'],
+                Other_Fuel_percent=row['other fuel percent']
+            )
+            processed_results.append(result)
+
+        elif asset_type == 'natural gas':
+            result = Natural_Gas_func(
+                Actual_estimate=row['actual/estimated'],
+                reporting_year=row['reporting year'],
+                Meter_Read_Units=row['meter read units'],
+                value_type=row['value type'],
+                Consumption=row['consumption'],
+                Total_spend=row['total spend'],
+                currency=row['currency']
+            )
+            processed_results.append(result)
+
+        elif asset_type in ['company vehicles (distance-based)', 'company vehicles (fuel-based)']:
+            if 'distance based' in row:  
+                result = Company_Vehicles(
+                    Actual_estimate=row['actual/estimated'],
+                    Activity_Type=row['activity type'],
+                    Reporting_Year=row['reporting year'],
+                    Method='distance based',
+                    Vehicle_category=row.get('vehicle category', ""),
+                    Vehicle_Type=row.get('vehicle type', ""),
+                    Fuel_type_Laden=row.get('fuel type/laden', "Diesel"),
+                    Unit_distance_travelled=row.get('unit distance travelled', "miles"),
+                    Distance_travelled=row.get('distance travelled', 0)
+                )
+            else:
+                # Fuel-based data processing
+                result = Company_Vehicles(
+                    Actual_estimate=row['actual/estimated'],
+                    Activity_Type=None,
+                    Reporting_Year=row['reporting year'],
+                    Method='fuel based',
+                    Fuel_type=row.get('fuel type', "Aviation spirit"),
+                    Fuel_Amount_in_litres=row.get('fuel_amount_in_litres', 0)
+                )
+            processed_results.append(result)
+
+        else:
+            print(f"Warning: No processing function found for asset type '{asset_type}'")
+
+    return json.dumps(processed_results, indent=2, default=str)
+
+
 
 # file_path = 'Batch-input-Page\Templates\Purchased_Electricity.xlsx'###########
 # file_path = 'Batch-input-Page\Templates\Natural_Gas.xlsx' ###################
 # file_path = 'Batch-input-Page\Templates\Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page\Templates\Refrigerants.xlsx'
-# file_path = 'Batch-input-Page\Templates\Other_Stationary.xlsx'
+file_path = 'Batch-input-Page\Templates\Other_Stationary.xlsx'
 # file_path = 'Batch-input-Page\Templates\Company_Vehicles_Fuel_based.xlsx'
-file_path = 'Batch-input-Page\Templates\Company_Vehicles_Distance_based.xlsx'
+# file_path = 'Batch-input-Page\Templates\Company_Vehicles_Distance_based.xlsx'
 
-result , headers = extract_data_by_asset_type(file_path)
-# print(result[0],headers)
-# print(headers)
-# print(result[0])
-
-json_result = process_asset_data(result)
-print(json_result)
+df, columns = extract_data_by_asset_type(file_path)
+if not df.empty:
+    processed_data_json = process_asset_data(df)
+    print(processed_data_json)
+else:
+    print("No data to process.")
