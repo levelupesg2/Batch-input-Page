@@ -43,6 +43,7 @@ def process_asset_data(df):
                 method=row['method'],
                 total_refrigerant_charge=row['total refrigerant charge (kg)']
             )
+            result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'heat and steam':
@@ -55,6 +56,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency_Type=row['currency']
             )
+            result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'other stationary':
@@ -68,6 +70,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency=row['currency']
             )
+            result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'purchased electricity':
@@ -91,6 +94,7 @@ def process_asset_data(df):
                 Renewables_percent=row['renewables percent'],
                 Other_Fuel_percent=row['other fuel percent']
             )
+            result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'natural gas':
@@ -103,6 +107,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency=row['currency']
             )
+            result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type in ['company vehicles (distance-based)', 'company vehicles (fuel-based)']:
@@ -127,8 +132,10 @@ def process_asset_data(df):
                     Fuel_type=row.get('fuel type', "Aviation spirit"),
                     Fuel_Amount_in_litres=row.get('fuel_amount_in_litres', 0)
                 )
+                
+            result['id'] = index+1
             processed_results.append(result)
-
+ 
         else:
             return(f"Warning: No processing function found for asset type '{asset_type}'")
 
@@ -138,11 +145,11 @@ def process_asset_data(df):
 
 # file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
 # file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
-# file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
+file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
 # file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
 # file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
-file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
+# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
 
 df = extract_data_by_asset_type(file_path)
 if not df.empty:
