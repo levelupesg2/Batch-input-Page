@@ -32,18 +32,18 @@ def extract_data_by_asset_type(file_path):
     return all_structured_data_list , df.columns.tolist()
 
 
-def purchased_electricity(Actual_estimate, Country , Tariff, Reporting_Year, value_type, 
-                          Reporting_periods_list=[2023], EF_years_list=[2023],
-                          Consumption_kWh=0, currency="", Total_spend=0, 
-                          Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
-                          Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
-                          Renewables_percent=0, Other_Fuel_percent=0):
-    return (f"Processed Purchased Electricity data: Country={Country}, Tariff={Tariff}, "
-            f"Year={Reporting_Year}, Value Type={value_type}, Consumption={Consumption_kWh} kWh, "
-            f"Total Spend={Total_spend} {currency}, Coal={Coal} ({Coal_percent}%), "
-            f"Natural Gas={Natural_Gas} ({Natural_Gas_percent}%), Nuclear={Nuclear} ({Nuclear_percent}%), "
-            f"Renewables={Renewables} ({Renewables_percent}%), Other Fuel={Other_Fuel} ({Other_Fuel_percent}%), "
-            f"Reporting Periods={Reporting_periods_list}, EF Years={EF_years_list}")
+# def purchased_electricity(Actual_estimate, Country , Tariff, Reporting_Year, value_type, 
+#                           Reporting_periods_list=[2023], EF_years_list=[2023],
+#                           Consumption_kWh=0, currency="", Total_spend=0, 
+#                           Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
+#                           Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
+#                           Renewables_percent=0, Other_Fuel_percent=0):
+#     return (f"Processed Purchased Electricity data: Country={Country}, Tariff={Tariff}, "
+#             f"Year={Reporting_Year}, Value Type={value_type}, Consumption={Consumption_kWh} kWh, "
+#             f"Total Spend={Total_spend} {currency}, Coal={Coal} ({Coal_percent}%), "
+#             f"Natural Gas={Natural_Gas} ({Natural_Gas_percent}%), Nuclear={Nuclear} ({Nuclear_percent}%), "
+#             f"Renewables={Renewables} ({Renewables_percent}%), Other Fuel={Other_Fuel} ({Other_Fuel_percent}%), "
+#             f"Reporting Periods={Reporting_periods_list}, EF Years={EF_years_list}")
 
 
 def company_vehicles(data):
@@ -55,8 +55,8 @@ asset_type_functions = {
     'Refrigerants': Refrigerants,
     'Heat_and_Steam': Heat_and_Steam,
     'Other_Stationary': Other_Stationary,
-    'Purchased_Electricity': purchased_electricity, ########## change this### to Purchased_Electricity
-    'Company_Vehicles': company_vehicles, ########## change this###
+    'Purchased_Electricity': Purchased_Electricity, 
+    'Company_Vehicles': Company_Vehicles,
     'Natural_Gas_func': Natural_Gas_func
 }
 def process_asset_data(structured_data_list):
@@ -75,7 +75,7 @@ def process_asset_data(structured_data_list):
         for asset_type, asset_data in data.items():
             if asset_type == 'Refrigerants':
                 result = Refrigerants(
-                    Actual_estimate = None ,
+                    Actual_estimate=asset_data.get('Actually/Estimate') ,
                     reporting_year  =asset_data.get('reporting year'),
                      Equipment_type =asset_data.get('equipment type'),
                      Purpose_stage =asset_data.get('purpose stage'),
@@ -87,7 +87,7 @@ def process_asset_data(structured_data_list):
                 processed_results.append({asset_type: result})
             elif asset_type == 'Heat and Steam':
                 result = Heat_and_Steam(
-                    Actual_estimate = None ,
+                    Actual_estimate=asset_data.get('Actually/Estimate') ,
                     Reporting_Year=asset_data.get('reporting year'),
                     Typology=asset_data.get('typology'),
                     value_type=asset_data.get('value type'),
@@ -98,7 +98,7 @@ def process_asset_data(structured_data_list):
                 processed_results.append({asset_type: result})
             elif asset_type == 'Other Stationary':
                 result = Other_Stationary(
-                    Actual_estimate = None ,
+                    Actual_estimate=asset_data.get('Actually/Estimate') ,
                     Reporting_Year=asset_data.get('reporting year'),
                     Fuel_type=asset_data.get('fuel type'),
                     Fuel_Unit=asset_data.get('fuel unit'),
@@ -109,9 +109,8 @@ def process_asset_data(structured_data_list):
                 )
                 processed_results.append({asset_type: result})             
             elif asset_type == 'Purchased Electricity':
-                ########## change this### to Purchased_Electricity
-                result = purchased_electricity( 
-                    Actual_estimate = None ,
+                result = Purchased_Electricity( 
+                    Actual_estimate=asset_data.get('Actually/Estimate') ,
                     Country=asset_data.get('country'),
                     Tariff=asset_data.get('tariff'),
                     Reporting_Year=asset_data.get('reporting year'),
@@ -133,7 +132,7 @@ def process_asset_data(structured_data_list):
                 processed_results.append({asset_type: result})                
             elif asset_type == 'Natural Gas':
                 result = Natural_Gas_func(
-                    Actual_estimate = None ,
+                    Actual_estimate=asset_data.get('Actually/Estimate') ,
                     reporting_year=asset_data.get('reporting year'),
                     Meter_Read_Units=asset_data.get('meter read units'),
                     value_type=asset_data.get('value type'),
@@ -141,8 +140,32 @@ def process_asset_data(structured_data_list):
                     Total_spend=asset_data.get('total spend'),
                     currency=asset_data.get('currency')
                 )
-                processed_results.append({asset_type: result})
-            ########## change this### ADD  Company_Vehicles 2 functions 
+            elif asset_type == 'Company Vehicles (Distance-based)'or asset_type == 'Company Vehicles (Fuel-based)':
+                # Determine if data corresponds to Distance-based or Fuel-based
+                if 'distance based' in asset_data:
+                    result = Company_Vehicles(
+                        Actual_estimate=asset_data.get('Actually/Estimate'),
+                        Activity_Type=asset_data.get('Activity_Type'),
+                        Reporting_Year=asset_data.get('Reporting_Year'),
+                        Method='distance based',
+                        Vehicle_category=asset_data.get('Vehicle Category', ""),
+                        Vehicle_Type=asset_data.get('Vehicle Type', ""),
+                        Fuel_type_Laden=asset_data.get('Fuel Type/Laden', "Diesel"),
+                        Unit_distance_travelled=asset_data.get('Unit Distance Travelled', "miles"),
+                        Distance_travelled=asset_data.get('Distance Travelled', 0),
+                        )
+                else:
+                    # Fuel-based data processing
+                    result = Company_Vehicles(
+                        Actual_estimate=asset_data.get('Actually/Estimate'),
+                        Activity_Type=None,
+                        Reporting_Year=asset_data.get('Reporting_Year'),
+                        Method='fuel based',
+                        Fuel_type=asset_data.get('Fuel Type', "Aviation spirit"),
+                Fuel_Amount_in_litres=asset_data.get('Fuel_Amount_in_litres', 0),
+                        Reporting_periods_list=[asset_data.get('Reporting_Year')],
+                    )
+                    processed_results.append({asset_type: result})
             else:
                 process_function = asset_type_functions.get(asset_type)
                 if process_function:
@@ -153,8 +176,14 @@ def process_asset_data(structured_data_list):
 
     return json.dumps(processed_results, indent=4, default=str)
 
+# file_path = 'Batch-input-Page\Templates\Purchased_Electricity.xlsx'###########
+# file_path = 'Batch-input-Page\Templates\Natural_Gas.xlsx' ###################
+# file_path = 'Batch-input-Page\Templates\Heat_and_Steam.xlsx'
+# file_path = 'Batch-input-Page\Templates\Refrigerants.xlsx'
+# file_path = 'Batch-input-Page\Templates\Other_Stationary.xlsx'
+# file_path = 'Batch-input-Page\Templates\Company_Vehicles_Fuel_based.xlsx'
+file_path = 'Batch-input-Page\Templates\Company_Vehicles_Distance_based.xlsx'
 
-file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
 result , headers = extract_data_by_asset_type(file_path)
 # print(result[0],headers)
 # print(headers)
