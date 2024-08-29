@@ -20,7 +20,7 @@ def extract_data_by_asset_type(file_path):
     
     # df = df.dropna(subset=['asset type'])
     
-    return df, df.columns.tolist()
+    return df
 
 def process_asset_data(df):
     """
@@ -118,8 +118,7 @@ def process_asset_data(df):
                     Unit_distance_travelled=row.get('unit distance travelled', "miles"),
                     Distance_travelled=row.get('distance travelled', 0)
                 )
-            else:
-                # Fuel-based data processing
+            else:  
                 result = Company_Vehicles(
                     Actual_estimate=row['actual/estimated'],
                     Activity_Type=None,
@@ -131,13 +130,13 @@ def process_asset_data(df):
             processed_results.append(result)
 
         else:
-            print(f"Warning: No processing function found for asset type '{asset_type}'")
+            return(f"Warning: No processing function found for asset type '{asset_type}'")
 
     return json.dumps(processed_results, indent=2, default=str)
 
 
 
-# file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'###########
+# file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
 # file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
 # file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
@@ -145,7 +144,7 @@ def process_asset_data(df):
 # file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
 file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
 
-df, columns = extract_data_by_asset_type(file_path)
+df = extract_data_by_asset_type(file_path)
 if not df.empty:
     processed_data_json = process_asset_data(df)
     print(processed_data_json)
