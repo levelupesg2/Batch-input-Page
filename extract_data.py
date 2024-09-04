@@ -43,7 +43,7 @@ def process_asset_data(df):
                 method=row['method'],
                 total_refrigerant_charge=row['total refrigerant charge (kg)']
             )
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'heat and steam':
@@ -56,7 +56,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency_Type=row['currency']
             )
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'other stationary':
@@ -70,7 +70,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency=row['currency']
             )
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'purchased electricity':
@@ -94,7 +94,7 @@ def process_asset_data(df):
                 Renewables_percent=row['renewables percent'],
                 Other_Fuel_percent=row['other fuel percent']
             )
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type == 'natural gas':
@@ -107,7 +107,7 @@ def process_asset_data(df):
                 Total_spend=row['total spend'],
                 currency=row['currency']
             )
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
 
         elif asset_type in ['company vehicles (distance-based)', 'company vehicles (fuel-based)']:
@@ -133,7 +133,7 @@ def process_asset_data(df):
                     Fuel_Amount_in_litres=row.get('fuel_amount_in_litres', 0)
                 )
                 
-            result['id'] = index+1
+            #result['id'] = index+1
             processed_results.append(result)
  
         else:
