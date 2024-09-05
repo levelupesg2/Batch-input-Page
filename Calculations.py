@@ -187,7 +187,8 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
 
     filtered_df = filtered_df[
                      (df['Year'] == int(EF_Year)) &
-                     (df['GHG/Unit'] == "kg CO2e")]
+                     (df['GHG/Unit'] == "kg CO2e")
+                     (df['Combustion or WTT'] == "Combustion")]
 
     # If a match is found, return the GHG conversion factor
     Emission_factor_kgCO2e_consumption_unit = 0
