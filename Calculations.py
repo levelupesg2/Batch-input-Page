@@ -188,7 +188,7 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
     filtered_df = filtered_df[
                      (df['Year'] == int(EF_Year)) &
                      (df['GHG/Unit'] == "kg CO2e")
-                     (df['Combustion or WTT'] == "Combustion")]
+                     ]
 
     # If a match is found, return the GHG conversion factor
     Emission_factor_kgCO2e_consumption_unit = 0
@@ -307,7 +307,7 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
             ['Coal', 'Natural Gas', 'Nuclear', 'Renewables', 'Other Fuel']
         ].values.flatten()
         
-        ef_row = ef_row[:len(mix_row)]################################
+        # ef_row = ef_row[:len(mix_row)]################################
         ef_row = np.nan_to_num(ef_row)
         Fuel_mix_emissions_KgCO2_KWh = np.sum(mix_row * ef_row)
 
