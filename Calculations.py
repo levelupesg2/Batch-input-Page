@@ -283,8 +283,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
         "Renewables": Renewables, "Other Fuel": Other_Fuel
     }
 
-    ownsuppliermixtb_df = ownsuppliermixtb_df.append(ownsuppliermixtb_new_row, ignore_index=True)#################
-    electricity_marketb_ef_df = electricity_marketb_ef_df.append(electricity_marketb_ef_new_row, ignore_index=True)###################
+    ownsuppliermixtb_df = ownsuppliermixtb_df._append(ownsuppliermixtb_new_row, ignore_index=True)#################
+    electricity_marketb_ef_df = electricity_marketb_ef_df._append(electricity_marketb_ef_new_row, ignore_index=True)###################
 
     Market_Based_Emission_Factor_kgCO2e_kWh = 0
     Grid_average = "Grid average"
