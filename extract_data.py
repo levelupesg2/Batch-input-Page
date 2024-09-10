@@ -143,13 +143,13 @@ def process_asset_data(df):
 
 
 
-# file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
-# file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'#Total_Emissions_kgCO2e
+file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
+# file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
 # file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
-file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'#FLAG_Emissions_tCO2e_or_no_flag
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'#0.0 values
+# file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
+# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
+# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
 
 df = extract_data_by_asset_type(file_path)
 if not df.empty:
