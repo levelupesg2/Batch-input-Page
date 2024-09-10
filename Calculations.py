@@ -3,7 +3,7 @@ import numpy as np
 import math as mt
 
 def conversion_to_USD(currency_Type, total_spend): 
-    df_currency = pd.read_excel("Batch-input-Page/Data/conversion to USD.xlsx")
+    df_currency = pd.read_excel("Data/conversion to USD.xlsx")
     df_currency[['2021','2022','2023']] = df_currency[['2021','2022','2023']].replace(["no data" , None] , 0 )
     df_currency[['2021','2022','2023']] = df_currency[['2021','2022','2023']].astype('float')
     filter_df = df_currency[df_currency['Currency from'].str.lower() == str(currency_Type).lower()]
@@ -39,7 +39,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     #*********************************************************************
     # calculate Emission factor (kgCO2e/kg)
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Define the column names
     columns = ['Level 3', 'Year', 'Level 5', 'GHG Conversion Factor']
@@ -66,7 +66,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     #*********************************************************************
     #calculate Total Emissions kgCO2e 
-    equipment_df = pd.read_excel("Batch-input-Page/Data/Refrigerant Equipment.xlsx")
+    equipment_df = pd.read_excel("Data/Refrigerant Equipment.xlsx")
 
     # Simplified Material Balance method
     Refrigerants_results = {}
@@ -120,7 +120,7 @@ def Heat_and_Steam(Actual_estimate , Reporting_Year,
     EF_Year = EF_years_list[index]
     
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Define the column names
     columns = ['Level 2', 'Year', 'Level 3', "GHG/Unit", 'GHG Conversion Factor']
@@ -179,7 +179,7 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
     EF_Year = EF_years_list[index]
 
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the refrigerant type, EF year, and column text
     filtered_df = df[(df['Level 3'].str.lower() == str(Fuel_type).lower()) &
@@ -241,7 +241,7 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
     EF_Year = EF_years_list[index]
 
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/IEA_sheet(S2).xlsx")
+    df = pd.read_excel("Data/IEA_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the country and EF year
     filtered_df = df[(df['Country/Region'].str.lower() == str(Country).lower()) &
@@ -268,8 +268,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
             return f"Error: {total_spend_after_conversion}"
 
     # Calculate Market-Based Emission Factor (kgCO2e/kWh)
-    ownsuppliermixtb_df = pd.read_excel("Batch-input-Page/Data/Own supplier mix.xlsx")
-    electricity_marketb_ef_df = pd.read_excel("Batch-input-Page/Data/Own supplier EF.xlsx")
+    ownsuppliermixtb_df = pd.read_excel("Data/Own supplier mix.xlsx")
+    electricity_marketb_ef_df = pd.read_excel("Data/Own supplier EF.xlsx")
 
     ownsuppliermixtb_new_row = {
         "Site": "-", "Countries": str(Country).lower(), "EF year": EF_Year, 
@@ -334,12 +334,11 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
     }
 
     return Purchased_Electricity_results
+
 # print(Purchased_Electricity(Country = "Egypt" ,Tariff = "Grid average" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Renewable procurement" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Own supplier mix" , 2023,
 #                             "Total Spend" ,[2021,2022,2023] ,[2020,2021 ,2022] ,0,"ALL" ,1351.188,1200,2000,2051 ,3021,1533,0.25,0.124,0.32,0.48,0.46))
-
-
 
 def Company_Vehicles(Actual_estimate ,Activity_Type,
                      Reporting_Year,
@@ -362,7 +361,7 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
     
 
     # Calculate Emission factor (kgCO2e/consumption unit)
-    beisEFtb = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    beisEFtb = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
     Emission_factor_kgCO2e_consumption_unit = 0
 
     if str(Activity_Type).lower() == "farm related" :
@@ -435,7 +434,6 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
  
 # print(Company_Vehicles("Non-farm related" , 2022 ,"distance based" ,"Gaseous fuels" ,"Butane",None,None,"Energy - Net CV","kWh (Net CV)",5031, [2020 ,2021 ,2022,2023,2024] , [2019,2020,2021,2022,2023])) 
  
- 
 def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_type ,  
                      Consumption = 0 ,Total_spend = 0 , currency = "",
                    Reporting_periods_list=[2020,2021,2022,2023,2024] , 
@@ -450,7 +448,7 @@ def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_
    
     #*********************************************************************
     # calculate Emission factor (kgCO2e/kg)
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the refrigerant type, EF year, and column text
     filtered_df = df[
@@ -485,7 +483,6 @@ def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_
     }
 
     return Natural_Gas_results
-
 
 # print(Natural_Gas_func(2022,"kWh (Gross CV)" ,"consumption" ,1351,0,"",[2020,2021,2022,2023] ,[2019,2020,2021,2022]))
 # print(Natural_Gas_func(2022,"kWh (Gross CV)" ,"total spend" ,0,135432.213,"ALL",[2020,2021,2022,2023] ,[2019,2020,2021,2022]))

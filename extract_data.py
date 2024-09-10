@@ -141,19 +141,17 @@ def process_asset_data(df):
 
     return json.dumps(processed_results, indent=2, default=str)
 
+# # file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
+# # file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
+# file_path = 'Templates/Heat_and_Steam.xlsx'
+# # file_path = 'Templates/Refrigerants.xlsx'
+# # file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
+# # file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
+# # file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
 
-
-# file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
-# file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
-# file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
-file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
-# file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
-
-df = extract_data_by_asset_type(file_path)
-if not df.empty:
-    processed_data_json = process_asset_data(df)
-    print(processed_data_json)
-else:
-    print("No data to process.")
+# df = extract_data_by_asset_type(file_path)
+# if not df.empty:
+#     processed_data_json = process_asset_data(df)
+#     print(processed_data_json)
+# else:
+#     print("No data to process.")
