@@ -358,7 +358,7 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
         Actual_estimate = "actual"
     # Calculate EF_Year
     index = Reporting_periods_list.index(Reporting_Year)
-    print(f"EF years : {EF_years_list} , Reporitn year list : {Reporting_periods_list}")
+    #print(f"EF years : {EF_years_list} , Reporitn year list : {Reporting_periods_list}")
     EF_Year = EF_years_list[index]
     
 
