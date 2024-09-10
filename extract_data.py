@@ -111,26 +111,26 @@ def process_asset_data(df):
             processed_results.append(result)
 
         elif asset_type in ['company vehicles (distance-based)', 'company vehicles (fuel-based)']:
-            if 'distance based' in row:  
+            if row['method'] == 'distance based' :  
                 result = Company_Vehicles(
                     Actual_estimate=row['actual/estimated'],
                     Activity_Type=row['activity type'],
                     Reporting_Year=row['reporting year'],
                     Method='distance based',
-                    Vehicle_category=row.get('vehicle category', ""),
-                    Vehicle_Type=row.get('vehicle type', ""),
-                    Fuel_type_Laden=row.get('fuel type/laden', "Diesel"),
-                    Unit_distance_travelled=row.get('unit distance travelled', "miles"),
-                    Distance_travelled=row.get('distance travelled', 0)
+                    Vehicle_category=row['vehicle category'],
+                    Vehicle_Type=row['vehicle type'],
+                    Fuel_type_Laden=row['fuel type/laden'],
+                    Unit_distance_travelled=row['unit distance travelled'],
+                    Distance_travelled=row['distance travelled']
                 )
-            else:  
+            elif row['method'] == 'fuel based':  
                 result = Company_Vehicles(
                     Actual_estimate=row['actual/estimated'],
                     Activity_Type=None,
                     Reporting_Year=row['reporting year'],
                     Method='fuel based',
-                    Fuel_type=row.get('fuel type', "Aviation spirit"),
-                    Fuel_Amount_in_litres=row.get('fuel_amount_in_litres', 0)
+                    Fuel_type=row['fuel type'],
+                    Fuel_Amount_in_litres=row['fuel amount in litres']
                 )
                 
             #result['id'] = index+1
@@ -145,11 +145,11 @@ def process_asset_data(df):
 
 # file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
 # file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
-file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
+# file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
 # file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'
-# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'
+# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'#FLAG_Emissions_tCO2e_or_no_flag
+# file_path = 'Batch-input-Page/Templates/Company_Vehicles_Distance_based.xlsx'#0.0 values
 
 df = extract_data_by_asset_type(file_path)
 if not df.empty:
