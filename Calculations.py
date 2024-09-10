@@ -19,8 +19,8 @@ def Refrigerants(Actual_estimate ,reporting_year ,
                    Purpose_stage ,
                    Refrigerant_type ,
                    Refrigerant_lost_kg ,
-                  method , Reporting_periods_list =[2023],
-                  EF_years_list = [2023] ,total_refrigerant_charge = 0) : 
+                  method , Reporting_periods_list =[2020,2021,2022,2023,2024],
+                  EF_years_list = [2020,2021,2022,2023,2024] ,total_refrigerant_charge = 0) : 
     
     # reporting period list = [ from 2021 to 2023 ] in my Excel 
     if Actual_estimate == None :
