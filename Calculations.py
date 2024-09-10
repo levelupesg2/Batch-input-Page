@@ -20,7 +20,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
                    Refrigerant_type ,
                    Refrigerant_lost_kg ,
                   method , Reporting_periods_list =[2020,2021,2022,2023,2024],
-                  EF_years_list = [2020,2021,2022,2023,2024] ,total_refrigerant_charge = 0) : 
+                  EF_years_list=[2019,2020,2021,2022,2023,2024] ,total_refrigerant_charge = 0) : 
     
     # reporting period list = [ from 2021 to 2023 ] in my Excel 
     if Actual_estimate == None :
@@ -103,7 +103,7 @@ def Heat_and_Steam(Actual_estimate , Reporting_Year,
                    Typology, 
                    value_type,
                    Reporting_periods_list=[2020,2021,2022,2023,2024],
-                   EF_years_list=[2020,2021,2022,2023,2024] ,
+                   EF_years_list=[2019,2020,2021,2022,2023,2024] ,
                    consumtion = 0, 
                     Total_spend=0 ,
                     currency_Type= "" ):
@@ -164,7 +164,7 @@ def Heat_and_Steam(Actual_estimate , Reporting_Year,
 
 def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, value_type ,  
                        Reporting_periods_list=[2020,2021,2022,2023,2024],
-                     EF_years_list=[2020,2021,2022,2023,2024], Consumption = 0 ,Total_spend = 0 , currency = ""):
+                     EF_years_list=[2019,2020,2021,2022,2023,2024], Consumption = 0 ,Total_spend = 0 , currency = ""):
 
     if Actual_estimate == None :
         Actual_estimate = "actual"
@@ -224,7 +224,7 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
 # print(Other_Stationary( 2022 ,"Butane" ,"kWh (Gross CV)" ,"Consumption" , [2021 ,2022 , 2023] , [2020,2021,2022]  , 1521 ))
 
 def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, value_type, 
-                          Reporting_periods_list=[2020,2021,2022,2023,2024], EF_years_list=[2020,2021,2022,2023,2024],
+                          Reporting_periods_list=[2020,2021,2022,2023,2024], EF_years_list=[2019,2020,2021,2022,2023,2024],
                            Consumption_kWh=0, currency="", Total_spend=0, 
                           Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
                           Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
@@ -353,7 +353,7 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
                      Unit_distance_travelled="miles",
                      Distance_travelled=5000, 
                      Reporting_periods_list=[2020,2021,2022,2023,2024],
-                     EF_years_list=[2020,2021,2022,2023,2024]):
+                     EF_years_list=[2019,2020,2021,2022,2023,2024]):
     if Actual_estimate == None :
         Actual_estimate = "actual"
     # Calculate EF_Year
@@ -440,7 +440,7 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
 def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_type ,  
                      Consumption = 0 ,Total_spend = 0 , currency = "",
                    Reporting_periods_list=[2020,2021,2022,2023,2024] , 
-                   EF_years_list=[2020,2021,2022,2023,2024]) :
+                   EF_years_list=[2019,2020,2021,2022,2023,2024]) :
     
     #*********************************************************************
     # Calculate EF_Year 
