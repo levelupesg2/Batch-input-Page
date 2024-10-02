@@ -1,5 +1,33 @@
-.idea
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 node_modules
+**/node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files.
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Package lock file
+package-lock.json
+
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -122,6 +150,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+config/database.js
 .env
 .venv
 env/
@@ -129,6 +158,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+UI/.env
+API/.env
+*/.env
 
 # Spyder project settings
 .spyderproject
@@ -164,8 +196,3 @@ cython_debug/
 
 .idea
 
-# Database migrations
-migrations/
-
-# Uploaded files
-uploads/
