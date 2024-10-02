@@ -1,0 +1,45 @@
+Finished[#############################################################]  100.0000%
+[
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Company_Vehicles_Distance_based.xlsx",
+    "Last Modified": "2024-10-02T15:41:15+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8A6764B98\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Company_Vehicles_Fuel_based.xlsx",
+    "Last Modified": "2024-10-02T15:41:19+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8A8DD448E\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Heat_and_Steam.xlsx",
+    "Last Modified": "2024-10-02T15:41:19+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8A8F655A8\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Natural_Gas.xlsx",
+    "Last Modified": "2024-10-02T15:41:19+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8A90C360A\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Other_Stationary.xlsx",
+    "Last Modified": "2024-10-02T15:41:35+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8B2956A30\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Purchased_Electricity.xlsx",
+    "Last Modified": "2024-10-02T15:41:35+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8B2C37253\""
+  },
+  {
+    "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Refrigerants.xlsx",
+    "Last Modified": "2024-10-02T15:41:51+00:00",
+    "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "eTag": "\"0x8DCE2F8BBEFD3BA\""
+  }
+]
