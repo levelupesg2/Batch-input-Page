@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
-import os
+
 import tempfile
-from extract_data import extract_data_by_asset_type
+from extract_data import process_asset_data, extract_data_by_asset_type
 from werkzeug.utils import secure_filename
 import requests
-
 
 app = Flask(__name__)
 
@@ -14,8 +13,6 @@ ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'csv'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-app = Flask(__name__)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -36,15 +33,19 @@ def upload_file():
             if not file_link or not company_id:
                 return jsonify({"error": "Missing 'file_link' or 'companyId' in one of the JSON objects."}), 400
 
-            # Download the file using the file_link
-            response = requests.get(file_link)
-            if response.status_code != 200:
-                return jsonify({"error": f"Failed to download the file from {file_link}"}), 400
+            # Check if the file_link is a local path
+            if file_link.startswith("temp\\"):
+                temp_file_path = file_link
+            else:
+                # Download the file using the file_link
+                response = requests.get(file_link)
+                if response.status_code != 200:
+                    return jsonify({"error": f"Failed to download the file from {file_link}"}), 400
 
-            # Save the file temporarily
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as temp_file:
-                temp_file.write(response.content)
-                temp_file_path = temp_file.name
+                # Save the file temporarily
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as temp_file:
+                    temp_file.write(response.content)
+                    temp_file_path = temp_file.name
 
             # Extract data from the file
             data_extracted = extract_data_by_asset_type(temp_file_path)
@@ -52,7 +53,7 @@ def upload_file():
                 return jsonify({"error": f"No data found in the file {file_link}"}), 400
 
             # Call the functions based on asset type
-            result = call_functions_based_on_asset_type(data_extracted)
+            result = process_asset_data(data_extracted)
 
             # Append the result to the results list
             results.append({
@@ -66,6 +67,3 @@ def upload_file():
     
     except Exception as e:
         return jsonify({"error": f"Failed to process the request: {str(e)}"}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)

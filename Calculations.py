@@ -19,8 +19,8 @@ def Refrigerants(Actual_estimate ,reporting_year ,
                    Purpose_stage ,
                    Refrigerant_type ,
                    Refrigerant_lost_kg ,
-                  method , Reporting_periods_list =[2023],
-                  EF_years_list = [2023] ,total_refrigerant_charge = 0) : 
+                  method , Reporting_periods_list =[2020,2021,2022,2023,2024],
+                  EF_years_list=[2019,2020,2021,2022,2023,2024] ,total_refrigerant_charge = 0) : 
     
     # reporting period list = [ from 2021 to 2023 ] in my Excel 
     if Actual_estimate == None :
@@ -66,7 +66,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     #*********************************************************************
     #calculate Total Emissions kgCO2e 
-    equipment_df = pd.read_excel("Batch-input-Page/Data/Refrigerant Equipment.xlsx")
+    equipment_df = pd.read_excel("Data/Refrigerant Equipment.xlsx")
 
     # Simplified Material Balance method
     Refrigerants_results = {}
@@ -102,8 +102,8 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 def Heat_and_Steam(Actual_estimate , Reporting_Year,
                    Typology, 
                    value_type,
-                   Reporting_periods_list=[2023],
-                   EF_years_list=[2023] ,
+                   Reporting_periods_list=[2020,2021,2022,2023,2024],
+                   EF_years_list=[2019,2020,2021,2022,2023,2024] ,
                    consumtion = 0, 
                     Total_spend=0 ,
                     currency_Type= "" ):
@@ -163,8 +163,8 @@ def Heat_and_Steam(Actual_estimate , Reporting_Year,
 # print(Heat_and_Steam(2023 ,"Onsite heat and steam","Consumption" , [2020 , 2021 ,2022 , 2023]  , [2019,2020,2021,2022] ,1500))
 
 def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, value_type ,  
-                       Reporting_periods_list=[2023],
-                     EF_years_list=[2023], Consumption = 0 ,Total_spend = 0 , currency = ""):
+                       Reporting_periods_list=[2020,2021,2022,2023,2024],
+                     EF_years_list=[2019,2020,2021,2022,2023,2024], Consumption = 0 ,Total_spend = 0 , currency = ""):
 
     if Actual_estimate == None :
         Actual_estimate = "actual"
@@ -185,10 +185,9 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
     filtered_df = df[(df['Level 3'].str.lower() == str(Fuel_type).lower()) &
                      (df['UOM'].str.lower() == str(Fuel_Unit).lower()) ]
 
-    filtered_df = filtered_df[
-                     (df['Year'] == int(EF_Year)) &
-                     (df['GHG/Unit'] == "kg CO2e")
-                     (df['Combustion or WTT'] == "Combustion")]
+    filtered_df = filtered_df[(df['Year'] == int(EF_Year)) &
+                              (df['GHG/Unit'] == "kg CO2e") &
+                              (df['Combustion or WTT']=="Combustion")]
 
     # If a match is found, return the GHG conversion factor
     Emission_factor_kgCO2e_consumption_unit = 0
@@ -224,7 +223,7 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
 # print(Other_Stationary( 2022 ,"Butane" ,"kWh (Gross CV)" ,"Consumption" , [2021 ,2022 , 2023] , [2020,2021,2022]  , 1521 ))
 
 def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, value_type, 
-                          Reporting_periods_list=[2023], EF_years_list=[2023],
+                          Reporting_periods_list=[2020,2021,2022,2023,2024], EF_years_list=[2019,2020,2021,2022,2023,2024],
                            Consumption_kWh=0, currency="", Total_spend=0, 
                           Coal=0, Natural_Gas=0, Nuclear=0, Renewables=0, Other_Fuel=0,
                           Coal_percent=0, Natural_Gas_percent=0, Nuclear_percent=0, 
@@ -242,7 +241,7 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
     EF_Year = EF_years_list[index]
 
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/IEA_sheet(S2).xlsx")
+    df = pd.read_excel("Data/IEA_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the country and EF year
     filtered_df = df[(df['Country/Region'].str.lower() == str(Country).lower()) &
@@ -269,8 +268,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
             return f"Error: {total_spend_after_conversion}"
 
     # Calculate Market-Based Emission Factor (kgCO2e/kWh)
-    ownsuppliermixtb_df = pd.read_excel("Batch-input-Page/Data/Own supplier mix.xlsx")
-    electricity_marketb_ef_df = pd.read_excel("Batch-input-Page/Data/Own supplier EF.xlsx")
+    ownsuppliermixtb_df = pd.read_excel("Data/Own supplier mix.xlsx")
+    electricity_marketb_ef_df = pd.read_excel("Data/Own supplier EF.xlsx")
 
     ownsuppliermixtb_new_row = {
         "Site": "-", "Countries": str(Country).lower(), "EF year": EF_Year, 
@@ -284,8 +283,8 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
         "Renewables": Renewables, "Other Fuel": Other_Fuel
     }
 
-    ownsuppliermixtb_df = ownsuppliermixtb_df.append(ownsuppliermixtb_new_row, ignore_index=True)#################
-    electricity_marketb_ef_df = electricity_marketb_ef_df.append(electricity_marketb_ef_new_row, ignore_index=True)###################
+    ownsuppliermixtb_df = ownsuppliermixtb_df._append(ownsuppliermixtb_new_row, ignore_index=True)#################
+    electricity_marketb_ef_df = electricity_marketb_ef_df._append(electricity_marketb_ef_new_row, ignore_index=True)###################
 
     Market_Based_Emission_Factor_kgCO2e_kWh = 0
     Grid_average = "Grid average"
@@ -307,7 +306,7 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
             ['Coal', 'Natural Gas', 'Nuclear', 'Renewables', 'Other Fuel']
         ].values.flatten()
         
-        ef_row = ef_row[:len(mix_row)]################################
+        # ef_row = ef_row[:len(mix_row)]################################
         ef_row = np.nan_to_num(ef_row)
         Fuel_mix_emissions_KgCO2_KWh = np.sum(mix_row * ef_row)
 
@@ -335,12 +334,11 @@ def Purchased_Electricity(Actual_estimate , Country, Tariff, Reporting_Year, val
     }
 
     return Purchased_Electricity_results
+
 # print(Purchased_Electricity(Country = "Egypt" ,Tariff = "Grid average" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Renewable procurement" , 2023,"Consumption" ,[2021,2022,2023] ,[2020,2021 ,2022] ,1351.626 ))
 # print(Purchased_Electricity("Egypt" ,"Own supplier mix" , 2023,
 #                             "Total Spend" ,[2021,2022,2023] ,[2020,2021 ,2022] ,0,"ALL" ,1351.188,1200,2000,2051 ,3021,1533,0.25,0.124,0.32,0.48,0.46))
-
-
 
 def Company_Vehicles(Actual_estimate ,Activity_Type,
                      Reporting_Year,
@@ -352,13 +350,13 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
                      Fuel_type_Laden="Diesel", 
                      Unit_distance_travelled="miles",
                      Distance_travelled=5000, 
-                     Reporting_periods_list=[2023],
-                     EF_years_list=[2023]):
+                     Reporting_periods_list=[2020,2021,2022,2023,2024],
+                     EF_years_list=[2019,2020,2021,2022,2023,2024]):
     if Actual_estimate == None :
         Actual_estimate = "actual"
     # Calculate EF_Year
     index = Reporting_periods_list.index(Reporting_Year)
-    print(f"EF years : {EF_years_list} , Reporitn year list : {Reporting_periods_list}")
+    #print(f"EF years : {EF_years_list} , Reporitn year list : {Reporting_periods_list}")
     EF_Year = EF_years_list[index]
     
 
@@ -436,11 +434,10 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
  
 # print(Company_Vehicles("Non-farm related" , 2022 ,"distance based" ,"Gaseous fuels" ,"Butane",None,None,"Energy - Net CV","kWh (Net CV)",5031, [2020 ,2021 ,2022,2023,2024] , [2019,2020,2021,2022,2023])) 
  
- 
 def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_type ,  
                      Consumption = 0 ,Total_spend = 0 , currency = "",
-                   Reporting_periods_list=[2023] , 
-                   EF_years_list =[2023]) :
+                   Reporting_periods_list=[2020,2021,2022,2023,2024] , 
+                   EF_years_list=[2019,2020,2021,2022,2023,2024]) :
     
     #*********************************************************************
     # Calculate EF_Year 
@@ -486,7 +483,6 @@ def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_
     }
 
     return Natural_Gas_results
-
 
 # print(Natural_Gas_func(2022,"kWh (Gross CV)" ,"consumption" ,1351,0,"",[2020,2021,2022,2023] ,[2019,2020,2021,2022]))
 # print(Natural_Gas_func(2022,"kWh (Gross CV)" ,"total spend" ,0,135432.213,"ALL",[2020,2021,2022,2023] ,[2019,2020,2021,2022]))
