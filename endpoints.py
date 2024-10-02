@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import os
 import tempfile
-from extract_function import call_functions_based_on_asset_type, extract_data_by_asset_type
+from extract_data import extract_data_by_asset_type
 from werkzeug.utils import secure_filename
 import requests
 

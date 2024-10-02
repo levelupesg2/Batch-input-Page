@@ -1,0 +1,33 @@
+name: Build and Push Docker Image of Batch Input
+# Trigger
+on:
+  push:
+    branches:
+      - docker-test
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: levelupportal.azurecr.io
+        username: ${{ secrets.LEVELUPPORTAL }}
+        password: ${{ secrets.LEVELUPPORTALPASS }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t batch-input .
+
+    - name: Tag Docker image
+      run: |
+        docker tag batch-input levelupportal.azurecr.io/batch-input:v1
+
+    - name: Push Docker image to Azure Container Registry
+      run: |
+        docker push levelupportal.azurecr.io/batch-input:v1

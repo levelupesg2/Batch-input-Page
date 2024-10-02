@@ -145,7 +145,7 @@ def process_asset_data(df):
 
 # file_path = 'Batch-input-Page/Templates/Purchased_Electricity.xlsx'
 # file_path = 'Batch-input-Page/Templates/Natural_Gas.xlsx'
-file_path = 'Batch-input-Page/Templates/Heat_and_Steam.xlsx'
+file_path = 'Templates/Heat_and_Steam.xlsx'
 # file_path = 'Batch-input-Page/Templates/Refrigerants.xlsx'
 # file_path = 'Batch-input-Page/Templates/Other_Stationary.xlsx'
 # file_path = 'Batch-input-Page/Templates/Company_Vehicles_Fuel_based.xlsx'

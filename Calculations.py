@@ -3,7 +3,7 @@ import numpy as np
 import math as mt
 
 def conversion_to_USD(currency_Type, total_spend): 
-    df_currency = pd.read_excel("Batch-input-Page/Data/conversion to USD.xlsx")
+    df_currency = pd.read_excel("Data/conversion to USD.xlsx")
     df_currency[['2021','2022','2023']] = df_currency[['2021','2022','2023']].replace(["no data" , None] , 0 )
     df_currency[['2021','2022','2023']] = df_currency[['2021','2022','2023']].astype('float')
     filter_df = df_currency[df_currency['Currency from'].str.lower() == str(currency_Type).lower()]
@@ -39,7 +39,7 @@ def Refrigerants(Actual_estimate ,reporting_year ,
 
     #*********************************************************************
     # calculate Emission factor (kgCO2e/kg)
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Define the column names
     columns = ['Level 3', 'Year', 'Level 5', 'GHG Conversion Factor']
@@ -120,7 +120,7 @@ def Heat_and_Steam(Actual_estimate , Reporting_Year,
     EF_Year = EF_years_list[index]
     
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Define the column names
     columns = ['Level 2', 'Year', 'Level 3', "GHG/Unit", 'GHG Conversion Factor']
@@ -179,7 +179,7 @@ def Other_Stationary(Actual_estimate , Reporting_Year, Fuel_type, Fuel_Unit, val
     EF_Year = EF_years_list[index]
 
     # Load data and perform calculations
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the refrigerant type, EF year, and column text
     filtered_df = df[(df['Level 3'].str.lower() == str(Fuel_type).lower()) &
@@ -363,7 +363,7 @@ def Company_Vehicles(Actual_estimate ,Activity_Type,
     
 
     # Calculate Emission factor (kgCO2e/consumption unit)
-    beisEFtb = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    beisEFtb = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
     Emission_factor_kgCO2e_consumption_unit = 0
 
     if str(Activity_Type).lower() == "farm related" :
@@ -451,7 +451,7 @@ def Natural_Gas_func(Actual_estimate ,reporting_year , Meter_Read_Units , value_
    
     #*********************************************************************
     # calculate Emission factor (kgCO2e/kg)
-    df = pd.read_excel("Batch-input-Page/Data/BEIS_sheet(S2).xlsx")
+    df = pd.read_excel("Data/BEIS_sheet(S2).xlsx")
 
     # Filter the DataFrame to match the refrigerant type, EF year, and column text
     filtered_df = df[
