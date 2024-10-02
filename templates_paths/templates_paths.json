@@ -1,6 +1,4 @@
-Finished[#############################################################]  100.0000%
-[
-  {
+{  {
     "Blob": "https://wwwsa.blob.core.windows.net/uploaded-xlsx-from-batch-inputs/empty_templates/Company_Vehicles_Distance_based.xlsx",
     "Last Modified": "2024-10-02T15:41:15+00:00",
     "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -42,4 +40,4 @@ Finished[#############################################################]  100.000
     "Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "eTag": "\"0x8DCE2F8BBEFD3BA\""
   }
-]
+}
